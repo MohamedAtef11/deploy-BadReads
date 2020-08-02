@@ -15,7 +15,28 @@ var storage = multer.diskStorage({
     cb(null, file.originalname)
   }
 })
+var storageb = multer.diskStorage({
+    destination: function (req, file, cb) {
+    cb(null, 'public/books/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+})
 var upload = multer({ storage: storage ,
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg"|| file.mimetype == "image/gif") {
+            cb(null, true);
+        } else {
+            cb(null, false);
+            return resp.status(401).json({
+                error: true,
+                message: "image must be .png .jpg or .jpeg!"
+            });
+        }
+    }
+});
+var uploadb = multer({ storageb: storageb ,
     fileFilter: (req, file, cb) => {
         if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg"|| file.mimetype == "image/gif") {
             cb(null, true);
@@ -117,10 +138,11 @@ router.get('/book',async(req,res)=>{
      
  
  
- router.post('/book',upload.single('img'),async(req,res,next)=>{
+ router.post('/book',uploadb.single('img'),async(req,res,next)=>{
     const {bookName,author,category} = req.body;
     const url = req.protocol + '://' + req.get('host') + '/books/' + req.file.originalname 
     const bookInstance = new bookModel({
+        bookId: Math.floor(Math.random() * 7775000),
         bookName:bookName,
         author:author,
         category:category,

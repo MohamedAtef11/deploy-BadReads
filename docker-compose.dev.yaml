@@ -4,14 +4,14 @@ services:
 
   nginx:
     restart: always
-    image: muhammadatef/BadReads-nginx:latest
+    build: ./nginx
        
     ports:
       - '3000:80'   
     volumes:
       - ./client/public/images:/static 
   api:
-    image: muhammadatef/BadReads-backend:latest
+    build: ./server
     ports:
       - "4000:4000"
     depends_on:
@@ -24,7 +24,7 @@ services:
         - ./server/:/app
 
   client:
-    image: muhammadatef/BadReads-frontend:latest
+    build: ./client
     container_name: blog-client
     stdin_open: true
     depends_on:
