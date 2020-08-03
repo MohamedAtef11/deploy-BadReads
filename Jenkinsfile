@@ -4,14 +4,13 @@ pipeline {
     stages {
         stage('Build local') {
             steps {
-                sh "sudo docker build -t build-frontend:1.0 ./badreads-frontend"
-                sh "sudo docker build -t build-backend:1.0 ./badreads-backend"
+                sh "sudo docker build -t build-frontend:1.0 ./client"
+                sh "sudo docker build -t build-backend:1.0 ./server"
                 sh "sudo docker build -t build-nginx:1.0 ./nginx"
             }
         }
         stage('Test') {
             steps {
-                sh "sudo docker run build-web:1.0 python tests/test.py "
                 sh "sudo docker run build-frontend:1.0 npm run test"
                 sh "sudo docker run build-backend:1.0 npm run test"
             }
